@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>swap - find a match nearby and swap</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif;
+            background: #000;
+            color: #E8DCC8;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Lava Lamp Background */
+        .lava-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .lava-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            animation: float 20s infinite ease-in-out;
+            will-change: transform, opacity;
+        }
+
+        .lava-blob:nth-child(1) {
+            width: 700px;
+            height: 700px;
+            background: radial-gradient(circle, rgba(232, 220, 200, 0.35), rgba(232, 220, 200, 0.15));
+            top: -10%;
+            left: -5%;
+            animation-duration: 25s;
+            animation-delay: 0s;
+        }
+
+        .lava-blob:nth-child(2) {
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(232, 220, 200, 0.3), rgba(232, 220, 200, 0.1));
+            top: 50%;
+            right: -10%;
+            animation-duration: 30s;
+            animation-delay: 3s;
+        }
+
+        .lava-blob:nth-child(3) {
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(232, 220, 200, 0.28), rgba(232, 220, 200, 0.08));
+            bottom: -15%;
+            left: 30%;
+            animation-duration: 28s;
+            animation-delay: 6s;
+        }
+
+        .lava-blob:nth-child(4) {
+            width: 550px;
+            height: 550px;
+            background: radial-gradient(circle, rgba(232, 220, 200, 0.25), rgba(232, 220, 200, 0.12));
+            top: 30%;
+            right: 20%;
+            animation-duration: 22s;
+            animation-delay: 2s;
+        }
+
+        .lava-blob:nth-child(5) {
+            width: 650px;
+            height: 650px;
+            background: radial-gradient(circle, rgba(232, 220, 200, 0.32), rgba(232, 220, 200, 0.1));
+            bottom: 20%;
+            right: 35%;
+            animation-duration: 27s;
+            animation-delay: 5s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+                opacity: 1;
+            }
+            25% {
+                transform: translate(150px, -100px) scale(1.15);
+                opacity: 0.9;
+            }
+            50% {
+                transform: translate(-80px, 120px) scale(0.95);
+                opacity: 1;
+            }
+            75% {
+                transform: translate(120px, 80px) scale(1.1);
+                opacity: 0.95;
+            }
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            padding: 1.5rem 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(232, 220, 200, 0.05);
+        }
+
+        .logo {
+            font-size: 1.75rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            color: #E8DCC8;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: #000;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+            font-weight: 400;
+            font-size: 0.95rem;
+        }
+
+        .nav-links a:hover {
+            opacity: 1;
+        }
+
+        .cta-nav {
+            background: #E8DCC8;
+            color: #000;
+            padding: 0.65rem 1.5rem;
+            border-radius: 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            opacity: 1 !important;
+        }
+
+        .cta-nav:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 16px rgba(232, 220, 200, 0.3);
+        }
+
+        /* Content wrapper */
+        .content {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 8rem 2rem 4rem;
+            text-align: center;
+        }
+
+        .beta-badge {
+            background: rgba(232, 220, 200, 0.1);
+            border: 1px solid rgba(232, 220, 200, 0.2);
+            padding: 0.5rem 1.25rem;
+            border-radius: 2rem;
+            font-size: 0.875rem;
+            margin-bottom: 2rem;
+            opacity: 0.8;
+        }
+
+        h1 {
+            font-size: 5.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+        }
+
+        .hero-tagline {
+            font-size: 1.75rem;
+            opacity: 0.75;
+            margin-bottom: 3rem;
+            line-height: 1.5;
+            font-weight: 400;
+        }
+
+        .cta-group {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .cta-primary {
+            background: #E8DCC8;
+            color: #000;
+            padding: 1.15rem 2.75rem;
+            border-radius: 2.5rem;
+            font-size: 1.05rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(232, 220, 200, 0.3);
+        }
+
+        .cta-secondary {
+            background: transparent;
+            color: #E8DCC8;
+            padding: 1.15rem 2.75rem;
+            border-radius: 2.5rem;
+            font-size: 1.05rem;
+            font-weight: 600;
+            border: 1.5px solid rgba(232, 220, 200, 0.25);
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-secondary:hover {
+            border-color: #E8DCC8;
+            background: rgba(232, 220, 200, 0.05);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 8rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 5rem;
+        }
+
+        .section-title {
+            font-size: 3.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .section-subtitle {
+            font-size: 1.25rem;
+            opacity: 0.7;
+            max-width: 600px;
+            margin: 0 auto;
+            font-weight: 400;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 3rem;
+        }
+
+        .feature-card {
+            background: rgba(232, 220, 200, 0.03);
+            padding: 3rem;
+            border-radius: 1.5rem;
+            border: 1px solid rgba(232, 220, 200, 0.08);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .feature-card:hover {
+            background: rgba(232, 220, 200, 0.05);
+            transform: translateY(-8px);
+            border-color: rgba(232, 220, 200, 0.15);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .feature-title {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .feature-description {
+            opacity: 0.75;
+            line-height: 1.7;
+            font-size: 1.05rem;
+        }
+
+        /* How It Works */
+        .how-it-works {
+            padding: 8rem 2rem;
+            background: rgba(232, 220, 200, 0.01);
+        }
+
+        .steps-container {
+            max-width: 1000px;
+            margin: 4rem auto 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 4rem;
+        }
+
+        .step {
+            text-align: center;
+            position: relative;
+        }
+
+        .step-number {
+            width: 70px;
+            height: 70px;
+            background: rgba(232, 220, 200, 0.1);
+            border: 2px solid rgba(232, 220, 200, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: #E8DCC8;
+        }
+
+        .step-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .step-description {
+            opacity: 0.75;
+            line-height: 1.7;
+            font-size: 1.05rem;
+        }
+
+        /* UI Preview Section */
+        .ui-preview {
+            padding: 8rem 2rem;
+            text-align: center;
+        }
+
+        .ui-mockup {
+            max-width: 1200px;
+            margin: 4rem auto 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .mockup-card {
+            background: rgba(232, 220, 200, 0.03);
+            border: 1px solid rgba(232, 220, 200, 0.08);
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            transition: all 0.3s;
+        }
+
+        .mockup-card:hover {
+            transform: translateY(-4px);
+            background: rgba(232, 220, 200, 0.05);
+        }
+
+        .mockup-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #E8DCC8;
+        }
+
+        .mockup-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.8;
+        }
+
+        .mockup-description {
+            opacity: 0.7;
+            line-height: 1.6;
+        }
+
+        /* Values Section */
+        .values {
+            padding: 8rem 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 3rem;
+            margin-top: 4rem;
+        }
+
+        .value-card {
+            text-align: center;
+        }
+
+        .value-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .value-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .value-description {
+            opacity: 0.75;
+            line-height: 1.6;
+        }
+
+        /* Final CTA */
+        .final-cta {
+            padding: 10rem 2rem;
+            text-align: center;
+        }
+
+        .final-cta h2 {
+            font-size: 4rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+
+        .final-cta p {
+            font-size: 1.5rem;
+            opacity: 0.75;
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Footer */
+        footer {
+            padding: 4rem 2rem 2rem;
+            border-top: 1px solid rgba(232, 220, 200, 0.08);
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+            text-align: left;
+        }
+
+        .footer-column h4 {
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            color: #E8DCC8;
+            font-weight: 600;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-column a {
+            color: #E8DCC8;
+            text-decoration: none;
+            opacity: 0.6;
+            transition: opacity 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .footer-column a:hover {
+            opacity: 1;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(232, 220, 200, 0.08);
+            opacity: 0.5;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 968px) {
+            nav {
+                padding: 1rem 2rem;
+            }
+
+            .nav-links {
+                gap: 1.5rem;
+            }
+
+            h1 {
+                font-size: 3.5rem;
+            }
+
+            .hero-tagline {
+                font-size: 1.35rem;
+            }
+
+            .section-title {
+                font-size: 2.5rem;
+            }
+
+            .final-cta h2 {
+                font-size: 2.75rem;
+            }
+        }
+
+        @media (max-width: 640px) {
+            nav {
+                padding: 1rem;
+            }
+
+            .nav-links a:not(.cta-nav) {
+                display: none;
+            }
+
+            h1 {
+                font-size: 2.75rem;
+            }
+
+            .cta-group {
+                flex-direction: column;
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .cta-primary, .cta-secondary {
+                width: 100%;
+            }
+        }
+
+        /* Smooth animations with parallax */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(60px);
+            transition: opacity 1s cubic-bezier(0.22, 1, 0.36, 1), transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Parallax layers */
+        .parallax-slow {
+            transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .parallax-fast {
+            transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        /* Scale on scroll */
+        .scale-in {
+            opacity: 0;
+            transform: scale(0.85);
+            transition: opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1), transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .scale-in.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Slide from side */
+        .slide-left {
+            opacity: 0;
+            transform: translateX(-100px);
+            transition: opacity 1s cubic-bezier(0.22, 1, 0.36, 1), transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .slide-left.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .slide-right {
+            opacity: 0;
+            transform: translateX(100px);
+            transition: opacity 1s cubic-bezier(0.22, 1, 0.36, 1), transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .slide-right.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Stagger children */
+        .stagger-item {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .stagger-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .stagger-item:nth-child(1) { transition-delay: 0s; }
+        .stagger-item:nth-child(2) { transition-delay: 0.1s; }
+        .stagger-item:nth-child(3) { transition-delay: 0.2s; }
+        .stagger-item:nth-child(4) { transition-delay: 0.3s; }
+        .stagger-item:nth-child(5) { transition-delay: 0.4s; }
+        .stagger-item:nth-child(6) { transition-delay: 0.5s; }
+    </style>
+</head>
+<body>
+    <!-- Lava Lamp Background -->
+    <div class="lava-container">
+        <div class="lava-blob"></div>
+        <div class="lava-blob"></div>
+        <div class="lava-blob"></div>
+        <div class="lava-blob"></div>
+        <div class="lava-blob"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">swap</div>
+        <div class="nav-links">
+            <a href="#features">features</a>
+            <a href="#how-it-works">how it works</a>
+            <a href="#values">why swap</a>
+            <a href="#cta" class="cta-nav">coming soon</a>
+        </div>
+    </nav>
+
+    <!-- Content -->
+    <div class="content">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="beta-badge">beta</div>
+            <h1>swap</h1>
+            <p class="hero-tagline">find a match nearby and swap</p>
+            <div class="cta-group">
+                <a href="#cta" class="cta-primary">coming soon</a>
+                <a href="#how-it-works" class="cta-secondary">learn more</a>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features" id="features">
+            <div class="section-header scale-in">
+                <h2 class="section-title">trade local, skip shipping</h2>
+                <p class="section-subtitle">zero fees, instant trades, and everything within walking distance</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card stagger-item">
+                    <span class="feature-icon">📍</span>
+                    <h3 class="feature-title">hyperlocal</h3>
+                    <p class="feature-description">see items on an interactive map. find what you want within blocks, not states.</p>
+                </div>
+                <div class="feature-card stagger-item">
+                    <span class="feature-icon">⚡</span>
+                    <h3 class="feature-title">instant</h3>
+                    <p class="feature-description">no shipping delays. match, message, and meet the same day.</p>
+                </div>
+                <div class="feature-card stagger-item">
+                    <span class="feature-icon">💸</span>
+                    <h3 class="feature-title">zero fees</h3>
+                    <p class="feature-description">keep 100% of your value. add cash for uneven trades.</p>
+                </div>
+                <div class="feature-card stagger-item">
+                    <span class="feature-icon">🔒</span>
+                    <h3 class="feature-title">safe</h3>
+                    <p class="feature-description">id verification, ratings, and safety prompts built in.</p>
+                </div>
+                <div class="feature-card stagger-item">
+                    <span class="feature-icon">🌱</span>
+                    <h3 class="feature-title">sustainable</h3>
+                    <p class="feature-description">zero shipping emissions. keep items in circulation longer.</p>
+                </div>
+                <div class="feature-card stagger-item">
+                    <span class="feature-icon">💬</span>
+                    <h3 class="feature-title">simple</h3>
+                    <p class="feature-description">swap, counter, or pass. negotiate directly in chat.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works -->
+        <section class="how-it-works" id="how-it-works">
+            <div class="section-header scale-in">
+                <h2 class="section-title">three steps to swap</h2>
+                <p class="section-subtitle">from listing to trading in minutes</p>
+            </div>
+            <div class="steps-container">
+                <div class="step slide-left">
+                    <div class="step-number">1</div>
+                    <h3 class="step-title">list</h3>
+                    <p class="step-description">snap a photo, add details, publish. takes 30 seconds.</p>
+                </div>
+                <div class="step scale-in">
+                    <div class="step-number">2</div>
+                    <h3 class="step-title">match</h3>
+                    <p class="step-description">browse the map or discovery feed. send offers and negotiate.</p>
+                </div>
+                <div class="step slide-right">
+                    <div class="step-number">3</div>
+                    <h3 class="step-title">meet</h3>
+                    <p class="step-description">confirm a public spot. both verify. complete the swap.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- UI Preview -->
+        <section class="ui-preview">
+            <div class="section-header scale-in">
+                <h2 class="section-title">designed for speed</h2>
+                <p class="section-subtitle">every feature built to make swapping effortless</p>
+            </div>
+            <div class="ui-mockup">
+                <div class="mockup-card stagger-item">
+                    <div class="mockup-icon">🗺️</div>
+                    <h3 class="mockup-title">discover</h3>
+                    <p class="mockup-description">interactive map shows everything nearby with category icons and distance</p>
+                </div>
+                <div class="mockup-card stagger-item">
+                    <div class="mockup-icon">❤️</div>
+                    <h3 class="mockup-title">likes</h3>
+                    <p class="mockup-description">see who wants your items. swap, counter, or pass with one tap</p>
+                </div>
+                <div class="mockup-card stagger-item">
+                    <div class="mockup-icon">👤</div>
+                    <h3 class="mockup-title">profile</h3>
+                    <p class="mockup-description">track your swaps, ratings, and build trust in the community</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Values -->
+        <section class="values" id="values">
+            <div class="section-header scale-in">
+                <h2 class="section-title">why swap exists</h2>
+                <p class="section-subtitle">we're building a better way to trade</p>
+            </div>
+            <div class="values-grid">
+                <div class="value-card stagger-item">
+                    <div class="value-icon">🤝</div>
+                    <h3 class="value-title">community first</h3>
+                    <p class="value-description">connect with people in your neighborhood. build local relationships.</p>
+                </div>
+                <div class="value-card stagger-item">
+                    <div class="value-icon">🌍</div>
+                    <h3 class="value-title">planet friendly</h3>
+                    <p class="value-description">eliminate shipping waste. extend the life of every item.</p>
+                </div>
+                <div class="value-card stagger-item">
+                    <div class="value-icon">⚖️</div>
+                    <h3 class="value-title">fair & transparent</h3>
+                    <p class="value-description">no hidden fees. no algorithms gaming the system. just people trading.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Final CTA -->
+        <section class="final-cta" id="cta">
+            <h2 class="scale-in">ready to start swapping?</h2>
+            <p class="fade-in">join the community trading locally, sustainably, and fee-free</p>
+            <div class="cta-group fade-in">
+                <button class="cta-primary" onclick="alert('coming soon to app store')">download soon</button>
+                <button class="cta-secondary" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">back to top</button>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h4>product</h4>
+                    <ul>
+                        <li><a href="#features">features</a></li>
+                        <li><a href="#how-it-works">how it works</a></li>
+                        <li><a href="#">download</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>company</h4>
+                    <ul>
+                        <li><a href="#">about</a></li>
+                        <li><a href="#">careers</a></li>
+                        <li><a href="#">contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>resources</h4>
+                    <ul>
+                        <li><a href="#">safety tips</a></li>
+                        <li><a href="#">help center</a></li>
+                        <li><a href="#">blog</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>legal</h4>
+                    <ul>
+                        <li><a href="#">terms</a></li>
+                        <li><a href="#">privacy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 swap. made in san francisco.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Simpler, more reliable scroll animations
+        const observerOptions = {
+            threshold: 0.05,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        // Wait for DOM to be fully loaded
+        window.addEventListener('load', () => {
+            // Observe all animated elements
+            const animatedElements = document.querySelectorAll(
+                '.fade-in, .scale-in, .slide-left, .slide-right, .stagger-item'
+            );
+            
+            animatedElements.forEach(el => {
+                observer.observe(el);
+            });
+
+            // Parallax effect on scroll
+            let ticking = false;
+            
+            window.addEventListener('scroll', () => {
+                if (!ticking) {
+                    window.requestAnimationFrame(() => {
+                        const scrollY = window.pageYOffset;
+                        
+                        // Hero parallax
+                        const hero = document.querySelector('.hero');
+                        if (hero && scrollY < 1000) {
+                            hero.style.transform = `translateY(${scrollY * 0.3}px)`;
+                            hero.style.opacity = Math.max(0, 1 - (scrollY / 800));
+                        }
+                        
+                        // Section header parallax
+                        document.querySelectorAll('.section-header').forEach((header) => {
+                            const rect = header.getBoundingClientRect();
+                            if (rect.top < window.innerHeight && rect.bottom > 0) {
+                                const offset = (rect.top - window.innerHeight / 2) * 0.05;
+                                header.style.transform = `translateY(${offset}px)`;
+                            }
+                        });
+                        
+                        ticking = false;
+                    });
+                    
+                    ticking = true;
+                }
+            });
+        });
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
