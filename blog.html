@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>swap — blog</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif;
+            background: #000;
+            color: #E8DCC8;
+            line-height: 1.65;
+        }
+        a { color: #E8DCC8; text-decoration: none; }
+        a:hover { color: #fff; }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 1.5rem 0;
+        }
+        .logo { font-size: 1.35rem; font-weight: 600; letter-spacing: -0.01em; }
+        .breadcrumb { font-size: 0.95rem; opacity: 0.65; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem 4.5rem; }
+        .hero { padding: 3.5rem 0 2rem; }
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            opacity: 0.65;
+        }
+        .hero h1 { font-size: 2.75rem; margin: 0.75rem 0 0.75rem; letter-spacing: -0.02em; }
+        .hero p { max-width: 720px; opacity: 0.7; }
+        .posts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.25rem;
+            margin-top: 1.5rem;
+        }
+        .post {
+            padding: 1.25rem;
+            border-radius: 1rem;
+            border: 1px solid rgba(232, 220, 200, 0.12);
+            background: rgba(232, 220, 200, 0.03);
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .post-date { font-size: 0.9rem; opacity: 0.6; letter-spacing: 0.04em; text-transform: uppercase; }
+        .post h2 { font-size: 1.15rem; letter-spacing: -0.01em; }
+        .post p { opacity: 0.7; }
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.35rem 0.65rem;
+            border-radius: 0.75rem;
+            border: 1px solid rgba(232, 220, 200, 0.16);
+            font-size: 0.85rem;
+            opacity: 0.8;
+            width: fit-content;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a class="logo" href="index.html">swap</a>
+        <div class="breadcrumb">blog</div>
+    </nav>
+    <main class="container">
+        <header class="hero">
+            <div class="eyebrow">stories · product</div>
+            <h1>Blog</h1>
+            <p>Notes from the team on product decisions, community safety, and local trading trends.</p>
+        </header>
+
+        <div class="posts">
+            <article class="post">
+                <div class="post-date">Jan 2026 · product</div>
+                <h2>Designing for low-friction swaps</h2>
+                <p>How we simplified the flow from listing to meetup while keeping trust cues front and center.</p>
+                <span class="tag">product thinking</span>
+            </article>
+            <article class="post">
+                <div class="post-date">Dec 2025 · community</div>
+                <h2>Building safer local meetups</h2>
+                <p>Guidelines we promote, places we recommend meeting, and what we do when something feels off.</p>
+                <span class="tag">safety</span>
+            </article>
+            <article class="post">
+                <div class="post-date">Nov 2025 · sustainability</div>
+                <h2>Why reuse beats shipping</h2>
+                <p>The environmental upside of local trades and how we nudge the most sustainable outcomes.</p>
+                <span class="tag">sustainability</span>
+            </article>
+            <article class="post">
+                <div class="post-date">Oct 2025 · roadmap</div>
+                <h2>What’s next for swap</h2>
+                <p>Nearby discovery improvements, better trust signals, and lightweight escrow for higher-value items.</p>
+                <span class="tag">roadmap</span>
+            </article>
+        </div>
+    </main>
+</body>
+</html>
