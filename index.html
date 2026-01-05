@@ -215,7 +215,7 @@
             overflow: hidden;
         }
 
-        .hero-media iframe {
+        .hero-media video {
             width: 100%;
             height: 100%;
             border: none;
@@ -224,6 +224,7 @@
             filter: contrast(1.08) saturate(1.02) brightness(0.92);
             animation: heroZoom 34s ease-in-out infinite alternate;
             transform: scale(1.08) translate3d(0, 0, 0);
+            object-fit: cover;
         }
 
         .hero-overlay {
@@ -361,12 +362,28 @@
         /* Features Section */
         .features {
             padding: 8rem 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .features::before {
+            content: '';
+            position: absolute;
+            top: -160px;
+            left: 0;
+            right: 0;
+            height: 220px;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0));
+            pointer-events: none;
+            z-index: 0;
         }
 
         .features .section-header,
         .features .features-grid {
             max-width: 1200px;
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
 
         .section-header {
@@ -391,7 +408,7 @@
 
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 3rem;
         }
 
@@ -490,6 +507,20 @@
         @keyframes network-pulse {
             0%, 100% { opacity: 0.6; }
             50% { opacity: 1; }
+        }
+
+        /* Modal centering safeguard */
+        .modal,
+        .dialog {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal .modal-content,
+        .dialog .modal-content,
+        .dialog .dialog-content {
+            margin: 0 auto;
         }
 
         .feature-title {
@@ -729,6 +760,10 @@
                 font-size: 1.35rem;
             }
 
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
             .section-title {
                 font-size: 2.5rem;
             }
@@ -871,13 +906,19 @@
         <!-- Hero Section -->
         <section class="hero">
             <div class="hero-media">
-                <iframe
-                    src="https://player.mux.com/YhZeEZSdqvBDU8uLRGEka0000uk873GpLUQLgvbJqhOqU?metadata-video-title=0_Abstract_Background_3840x2160&video-title=0_Abstract_Background_3840x2160&muted=1&autoplay=1&loop=1&playsinline=1"
-                    title="swap hero background video"
-                    allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
-                    allowfullscreen
+                <video
+                    class="hero-video"
+                    playsinline
+                    autoplay
+                    muted
+                    loop
+                    preload="auto"
                     aria-hidden="true"
-                ></iframe>
+                >
+                    <source src="https://stream.mux.com/YhZeEZSdqvBDU8uLRGEka0000uk873GpLUQLgvbJqhOqU/high.mp4" type="video/mp4">
+                    <source src="https://stream.mux.com/YhZeEZSdqvBDU8uLRGEka0000uk873GpLUQLgvbJqhOqU/medium.mp4" type="video/mp4">
+                    <source src="https://stream.mux.com/YhZeEZSdqvBDU8uLRGEka0000uk873GpLUQLgvbJqhOqU.m3u8" type="application/x-mpegURL">
+                </video>
             </div>
             <div class="hero-overlay"></div>
             <div class="hero-content">
@@ -1116,6 +1157,15 @@
         window.addEventListener('load', () => {
             // Release intro animation
             requestAnimationFrame(() => document.body.classList.remove('preload'));
+
+            // Nudge hero video to play on mobile
+            const heroVideo = document.querySelector('.hero-video');
+            const tryPlay = () => heroVideo && heroVideo.play().catch(() => {});
+            if (heroVideo) {
+                heroVideo.addEventListener('loadeddata', tryPlay);
+                heroVideo.addEventListener('click', tryPlay, { once: true });
+                heroVideo.addEventListener('touchstart', tryPlay, { once: true });
+            }
 
             // Observe all animated elements
             const animatedElements = document.querySelectorAll(
