@@ -412,9 +412,84 @@
         }
 
         .feature-icon {
-            font-size: 3rem;
-            margin-bottom: 1.5rem;
-            display: block;
+            width: 110px;
+            height: 110px;
+            margin: 0 auto 1.5rem;
+        }
+
+        .feature-icon svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.28));
+            transition: transform 0.4s ease, filter 0.4s ease, opacity 0.4s ease;
+            opacity: 0.9;
+        }
+
+        .feature-card:hover .feature-icon svg {
+            transform: translateY(-4px) scale(1.03);
+            filter: drop-shadow(0 18px 45px rgba(0, 0, 0, 0.4));
+            opacity: 1;
+        }
+
+        .icon-stacked path,
+        .icon-flowing path,
+        .icon-connected circle,
+        .icon-network line,
+        .icon-network circle {
+            transition: filter 0.3s ease, opacity 0.3s ease;
+        }
+
+        .icon-connected circle {
+            transform-origin: 100px 100px;
+        }
+
+        .feature-card:hover .icon-stacked path {
+            animation: stacked-bounce 1.8s ease-in-out infinite;
+            filter: drop-shadow(0 0 10px rgba(232, 220, 200, 0.5));
+        }
+
+        .feature-card:hover .icon-flowing path {
+            animation: flowing-wave 2.2s ease-in-out infinite;
+            filter: drop-shadow(0 0 10px rgba(232, 220, 200, 0.5));
+        }
+
+        .feature-card:hover .icon-connected circle {
+            animation: connected-spin 10s linear infinite;
+            filter: drop-shadow(0 0 10px rgba(232, 220, 200, 0.5));
+        }
+
+        .feature-card:hover .icon-connected circle.core {
+            animation: connected-pulse 2.4s ease-in-out infinite;
+        }
+
+        .feature-card:hover .icon-network line,
+        .feature-card:hover .icon-network circle {
+            animation: network-pulse 2s ease-in-out infinite;
+            filter: drop-shadow(0 0 10px rgba(232, 220, 200, 0.5));
+        }
+
+        @keyframes stacked-bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(8px); }
+        }
+
+        @keyframes flowing-wave {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(10px); }
+        }
+
+        @keyframes connected-spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes connected-pulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes network-pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
         }
 
         .feature-title {
@@ -824,34 +899,78 @@
             </div>
             <div class="features-grid">
                 <div class="feature-card stagger-item">
-                    <span class="feature-icon">📍</span>
+                    <div class="feature-icon">
+                        <svg class="icon-network" viewBox="0 0 200 200" aria-hidden="true" focusable="false">
+                            <defs>
+                                <linearGradient id="grad-network" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#E8DCC8" />
+                                    <stop offset="100%" stop-color="#CBBDA7" />
+                                </linearGradient>
+                            </defs>
+                            <line x1="50" y1="50" x2="150" y2="150" stroke="url(#grad-network)" stroke-width="3" opacity="0.7" />
+                            <line x1="150" y1="50" x2="50" y2="150" stroke="url(#grad-network)" stroke-width="3" opacity="0.7" />
+                            <line x1="100" y1="30" x2="100" y2="170" stroke="url(#grad-network)" stroke-width="2.6" opacity="0.5" />
+                            <line x1="30" y1="100" x2="170" y2="100" stroke="url(#grad-network)" stroke-width="2.6" opacity="0.5" />
+                            <circle cx="100" cy="100" r="7" fill="#E8DCC8" />
+                            <circle cx="50" cy="50" r="6" fill="#CBBDA7" opacity="0.9" />
+                            <circle cx="150" cy="150" r="6" fill="#CBBDA7" opacity="0.9" />
+                            <circle cx="150" cy="50" r="6" fill="#CBBDA7" opacity="0.9" />
+                            <circle cx="50" cy="150" r="6" fill="#CBBDA7" opacity="0.9" />
+                        </svg>
+                    </div>
                     <h3 class="feature-title">hyperlocal</h3>
                     <p class="feature-description">see items on an interactive map. find what you want within blocks, not states.</p>
                 </div>
                 <div class="feature-card stagger-item">
-                    <span class="feature-icon">⚡</span>
+                    <div class="feature-icon">
+                        <svg class="icon-flowing" viewBox="0 0 200 200" aria-hidden="true" focusable="false">
+                            <defs>
+                                <linearGradient id="grad-flowing" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#E8DCC8" />
+                                    <stop offset="100%" stop-color="#CBBDA7" />
+                                </linearGradient>
+                            </defs>
+                            <path d="M 30 100 Q 50 80 70 100 T 110 100 T 150 100 T 190 100" fill="none" stroke="url(#grad-flowing)" stroke-width="5" stroke-linecap="round" />
+                            <path d="M 30 125 Q 50 105 70 125 T 110 125 T 150 125 T 190 125" fill="none" stroke="url(#grad-flowing)" stroke-width="5" stroke-linecap="round" opacity="0.7" />
+                        </svg>
+                    </div>
                     <h3 class="feature-title">instant</h3>
                     <p class="feature-description">no shipping delays. match, message, and meet the same day.</p>
                 </div>
                 <div class="feature-card stagger-item">
-                    <span class="feature-icon">💸</span>
+                    <div class="feature-icon">
+                        <svg class="icon-stacked" viewBox="0 0 200 200" aria-hidden="true" focusable="false">
+                            <defs>
+                                <linearGradient id="grad-stacked" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#E8DCC8" />
+                                    <stop offset="100%" stop-color="#CBBDA7" />
+                                </linearGradient>
+                            </defs>
+                            <path d="M 40 70 Q 100 50 160 70" fill="none" stroke="url(#grad-stacked)" stroke-width="5" stroke-linecap="round" />
+                            <path d="M 40 105 Q 100 88 160 105" fill="none" stroke="url(#grad-stacked)" stroke-width="5" stroke-linecap="round" opacity="0.8" />
+                            <path d="M 40 140 Q 100 126 160 140" fill="none" stroke="url(#grad-stacked)" stroke-width="5" stroke-linecap="round" opacity="0.65" />
+                        </svg>
+                    </div>
                     <h3 class="feature-title">zero fees</h3>
                     <p class="feature-description">keep 100% of your value. add cash for uneven trades.</p>
                 </div>
                 <div class="feature-card stagger-item">
-                    <span class="feature-icon">🔒</span>
+                    <div class="feature-icon">
+                        <svg class="icon-connected" viewBox="0 0 200 200" aria-hidden="true" focusable="false">
+                            <defs>
+                                <linearGradient id="grad-connected" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#E8DCC8" />
+                                    <stop offset="100%" stop-color="#CBBDA7" />
+                                </linearGradient>
+                            </defs>
+                            <circle cx="100" cy="100" r="70" fill="none" stroke="url(#grad-connected)" stroke-width="4" opacity="0.7" />
+                            <circle cx="100" cy="100" r="50" fill="none" stroke="url(#grad-connected)" stroke-width="3.5" opacity="0.6" />
+                            <circle cx="100" cy="100" r="28" fill="none" stroke="url(#grad-connected)" stroke-width="3" opacity="0.55" />
+                            <circle class="core" cx="100" cy="100" r="10" fill="#E8DCC8" />
+                        </svg>
+                    </div>
                     <h3 class="feature-title">safe</h3>
                     <p class="feature-description">id verification, ratings, and safety prompts built in.</p>
-                </div>
-                <div class="feature-card stagger-item">
-                    <span class="feature-icon">🌱</span>
-                    <h3 class="feature-title">sustainable</h3>
-                    <p class="feature-description">zero shipping emissions. keep items in circulation longer.</p>
-                </div>
-                <div class="feature-card stagger-item">
-                    <span class="feature-icon">💬</span>
-                    <h3 class="feature-title">simple</h3>
-                    <p class="feature-description">swap, counter, or pass. negotiate directly in chat.</p>
                 </div>
             </div>
         </section>
