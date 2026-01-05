@@ -30,95 +30,6 @@
             transition: opacity 0.65s ease, transform 0.65s ease;
         }
 
-        /* Lava Lamp Background */
-        .lava-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            overflow: hidden;
-            pointer-events: none;
-        }
-
-        .lava-blob {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(120px);
-            animation: float 20s infinite ease-in-out;
-            will-change: transform, opacity;
-        }
-
-        .lava-blob:nth-child(1) {
-            width: 700px;
-            height: 700px;
-            background: radial-gradient(circle, rgba(232, 220, 200, 0.35), rgba(232, 220, 200, 0.15));
-            top: -10%;
-            left: -5%;
-            animation-duration: 25s;
-            animation-delay: 0s;
-        }
-
-        .lava-blob:nth-child(2) {
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(232, 220, 200, 0.3), rgba(232, 220, 200, 0.1));
-            top: 50%;
-            right: -10%;
-            animation-duration: 30s;
-            animation-delay: 3s;
-        }
-
-        .lava-blob:nth-child(3) {
-            width: 800px;
-            height: 800px;
-            background: radial-gradient(circle, rgba(232, 220, 200, 0.28), rgba(232, 220, 200, 0.08));
-            bottom: -15%;
-            left: 30%;
-            animation-duration: 28s;
-            animation-delay: 6s;
-        }
-
-        .lava-blob:nth-child(4) {
-            width: 550px;
-            height: 550px;
-            background: radial-gradient(circle, rgba(232, 220, 200, 0.25), rgba(232, 220, 200, 0.12));
-            top: 30%;
-            right: 20%;
-            animation-duration: 22s;
-            animation-delay: 2s;
-        }
-
-        .lava-blob:nth-child(5) {
-            width: 650px;
-            height: 650px;
-            background: radial-gradient(circle, rgba(232, 220, 200, 0.32), rgba(232, 220, 200, 0.1));
-            bottom: 20%;
-            right: 35%;
-            animation-duration: 27s;
-            animation-delay: 5s;
-        }
-
-        @keyframes float {
-            0%, 100% {
-                transform: translate(0, 0) scale(1);
-                opacity: 1;
-            }
-            25% {
-                transform: translate(150px, -100px) scale(1.15);
-                opacity: 0.9;
-            }
-            50% {
-                transform: translate(-80px, 120px) scale(0.95);
-                opacity: 1;
-            }
-            75% {
-                transform: translate(120px, 80px) scale(1.1);
-                opacity: 0.95;
-            }
-        }
-
         /* Navigation */
         nav {
             position: fixed;
@@ -202,6 +113,46 @@
             align-items: center;
             padding: 8rem 2rem 4rem;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+            isolation: isolate;
+            background: #000;
+        }
+
+        .hero-media {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .hero-media iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            pointer-events: none;
+            transform: scale(1.05);
+            background: #000;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            background:
+                linear-gradient(180deg, rgba(0, 0, 0, 0.58), rgba(0, 0, 0, 0.85)),
+                radial-gradient(circle at 18% 18%, rgba(0, 0, 0, 0.35), transparent 36%),
+                radial-gradient(circle at 80% 24%, rgba(0, 0, 0, 0.3), transparent 40%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
         }
 
         .beta-badge {
@@ -716,15 +667,6 @@
     </style>
 </head>
 <body class="preload">
-    <!-- Lava Lamp Background -->
-    <div class="lava-container">
-        <div class="lava-blob"></div>
-        <div class="lava-blob"></div>
-        <div class="lava-blob"></div>
-        <div class="lava-blob"></div>
-        <div class="lava-blob"></div>
-    </div>
-
     <!-- Navigation -->
     <nav>
         <div class="logo">swap</div>
@@ -740,12 +682,24 @@
     <div class="content">
         <!-- Hero Section -->
         <section class="hero">
-            <div class="beta-badge">beta</div>
-            <h1>swap</h1>
-            <p class="hero-tagline">find a match nearby and swap</p>
-            <div class="cta-group">
-                <a href="#cta" class="cta-primary metallic-sheen">coming soon</a>
-                <a href="#how-it-works" class="cta-secondary metallic-sheen">learn more</a>
+            <div class="hero-media">
+                <iframe
+                    src="https://player.mux.com/rR8P8mSaKDzz02TsftugTUdI00cQPJX00oy?metadata-video-title=Test+Video&video-title=Test+Video&muted=1&autoplay=1&loop=1&playsinline=1"
+                    title="swap hero background video"
+                    allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+                    allowfullscreen
+                    aria-hidden="true"
+                ></iframe>
+            </div>
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <div class="beta-badge">beta</div>
+                <h1>swap</h1>
+                <p class="hero-tagline">find a match nearby and swap</p>
+                <div class="cta-group">
+                    <a href="#cta" class="cta-primary metallic-sheen">coming soon</a>
+                    <a href="#how-it-works" class="cta-secondary metallic-sheen">learn more</a>
+                </div>
             </div>
         </section>
 
