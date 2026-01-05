@@ -162,13 +162,17 @@
         }
 
         .cta-nav {
-            background: #000;
+            position: relative;
+            overflow: hidden;
+            isolation: isolate;
+            background: linear-gradient(135deg, #111, #000);
             color: #fff;
             padding: 0.65rem 1.5rem;
             border-radius: 1.5rem;
             font-weight: 600;
             transition: all 0.3s;
             opacity: 1 !important;
+            box-shadow: 0 10px 26px rgba(0, 0, 0, 0.38), 0 0 0 1px rgba(232, 220, 200, 0.12);
         }
 
         .cta-nav:hover {
@@ -728,7 +732,7 @@
             <a href="#features">features</a>
             <a href="#how-it-works">how it works</a>
             <a href="#values">why swap</a>
-            <a href="#cta" class="cta-nav">coming soon</a>
+            <a href="#cta" class="cta-nav metallic-sheen">coming soon</a>
         </div>
     </nav>
 
