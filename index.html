@@ -11,20 +11,12 @@
             box-sizing: border-box;
         }
 
-        :root {
-            --tilt-x: 0deg;
-            --tilt-y: 0deg;
-            --pan-x: 0px;
-            --pan-y: 0px;
-        }
-
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif;
             background: #000;
             color: #E8DCC8;
             line-height: 1.6;
             overflow-x: hidden;
-            perspective: 1600px;
         }
 
         /* Lava Lamp Background */
@@ -176,10 +168,6 @@
         .content {
             position: relative;
             z-index: 1;
-            transform-style: preserve-3d;
-            transform: rotateX(var(--tilt-y)) rotateY(var(--tilt-x)) translate3d(var(--pan-x), var(--pan-y), 0);
-            transition: transform 0.45s ease-out;
-            will-change: transform;
         }
 
         /* Hero Section */
@@ -226,15 +214,6 @@
             flex-wrap: wrap;
         }
 
-        .hero-motion {
-            animation: breathe 9s ease-in-out infinite;
-        }
-
-        @keyframes breathe {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
-        }
-
         .cta-primary {
             background: #E8DCC8;
             color: #000;
@@ -271,6 +250,97 @@
         .cta-secondary:hover {
             border-color: #E8DCC8;
             background: rgba(232, 220, 200, 0.05);
+        }
+
+        /* Glass strip */
+        .glass-strip {
+            position: relative;
+            max-width: 1100px;
+            margin: -2rem auto 6rem;
+            padding: 1.5rem 1.75rem;
+            background: linear-gradient(135deg, rgba(232, 220, 200, 0.08), rgba(232, 220, 200, 0.02));
+            border: 1px solid rgba(232, 220, 200, 0.14);
+            border-radius: 1.25rem;
+            backdrop-filter: blur(18px);
+            box-shadow: 0 24px 70px rgba(0, 0, 0, 0.35);
+            overflow: hidden;
+        }
+
+        .glass-strip::after {
+            content: '';
+            position: absolute;
+            inset: -20%;
+            background: repeating-linear-gradient(
+                120deg,
+                rgba(232, 220, 200, 0.08),
+                rgba(232, 220, 200, 0.08) 14px,
+                transparent 14px,
+                transparent 32px
+            );
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        .glass-strip::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 20% 30%, rgba(232, 220, 200, 0.12), transparent 35%),
+                        radial-gradient(circle at 80% 60%, rgba(232, 220, 200, 0.08), transparent 45%);
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .glass-strip-inner {
+            position: relative;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .glass-strip-label {
+            font-size: 0.9rem;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            opacity: 0.6;
+        }
+
+        .glass-strip-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1rem;
+        }
+
+        .glass-item {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            padding: 0.9rem 1rem;
+            border-radius: 1rem;
+            border: 1px solid rgba(232, 220, 200, 0.08);
+            background: rgba(0, 0, 0, 0.25);
+        }
+
+        .icon-circle {
+            width: 44px;
+            height: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            border: 1px solid rgba(232, 220, 200, 0.15);
+            background: rgba(232, 220, 200, 0.04);
+        }
+
+        .glass-copy h4 {
+            font-size: 1rem;
+            margin-bottom: 0.15rem;
+        }
+
+        .glass-copy p {
+            font-size: 0.95rem;
+            opacity: 0.65;
         }
 
         /* Features Section */
@@ -572,6 +642,10 @@
             .final-cta h2 {
                 font-size: 2.75rem;
             }
+
+            .glass-strip {
+                margin: 1rem 1.25rem 4rem;
+            }
         }
 
         @media (max-width: 768px) {
@@ -708,9 +782,59 @@
             <div class="beta-badge">beta</div>
             <h1>swap</h1>
             <p class="hero-tagline">find a match nearby and swap</p>
-            <div class="cta-group hero-motion">
+            <div class="cta-group">
                 <a href="#cta" class="cta-primary">coming soon</a>
                 <a href="#how-it-works" class="cta-secondary">learn more</a>
+            </div>
+        </section>
+
+        <!-- Glass strip -->
+        <section class="glass-strip fade-in" aria-label="design signals">
+            <div class="glass-strip-inner">
+                <div class="glass-strip-label">shadcn/ui sensibility · figma icons · lottie-ready</div>
+                <div class="glass-strip-items">
+                    <div class="glass-item">
+                        <span class="icon-circle" aria-hidden="true">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E8DCC8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 3L4 7v5c0 5 3.5 8 8 9 4.5-1 8-4 8-9V7l-8-4Z"/>
+                                <path d="M9.5 12.5 11 14l3.5-3.5"/>
+                            </svg>
+                        </span>
+                        <div class="glass-copy">
+                            <h4>trust-first</h4>
+                            <p>crisp strokes, glass edges, frictionless cues.</p>
+                        </div>
+                    </div>
+                    <div class="glass-item">
+                        <span class="icon-circle" aria-hidden="true">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E8DCC8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="6"/>
+                                <path d="M12 8v4l2.5 1.5"/>
+                                <path d="M5 3 3 5"/>
+                                <path d="M19 3l2 2"/>
+                                <path d="M5 21l-2-2"/>
+                                <path d="M21 19l-2-2"/>
+                            </svg>
+                        </span>
+                        <div class="glass-copy">
+                            <h4>timeless rhythm</h4>
+                            <p>minimal motion, premium pacing, easy on eyes.</p>
+                        </div>
+                    </div>
+                    <div class="glass-item">
+                        <span class="icon-circle" aria-hidden="true">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E8DCC8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M7 11c0 2.5 2 5 5 7 3-2 5-4.5 5-7a5 5 0 0 0-10 0Z"/>
+                                <circle cx="9.5" cy="10.5" r="1"/>
+                                <circle cx="14.5" cy="10.5" r="1"/>
+                            </svg>
+                        </span>
+                        <div class="glass-copy">
+                            <h4>human warmth</h4>
+                            <p>figma-grade line icons and lottie-friendly slots.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -905,76 +1029,7 @@
                 observer.observe(el);
             });
 
-            // Parallax effect on scroll
-            let ticking = false;
-            
-            window.addEventListener('scroll', () => {
-                if (!ticking) {
-                    window.requestAnimationFrame(() => {
-                        const scrollY = window.pageYOffset;
-                        
-                        // Hero parallax
-                        const hero = document.querySelector('.hero');
-                        if (hero && scrollY < 1000) {
-                            hero.style.transform = `translateY(${scrollY * 0.3}px)`;
-                            hero.style.opacity = Math.max(0, 1 - (scrollY / 800));
-                        }
-                        
-                        // Section header parallax
-                        document.querySelectorAll('.section-header').forEach((header) => {
-                            const rect = header.getBoundingClientRect();
-                            if (rect.top < window.innerHeight && rect.bottom > 0) {
-                                const offset = (rect.top - window.innerHeight / 2) * 0.05;
-                                header.style.transform = `translateY(${offset}px)`;
-                            }
-                        });
-                        
-                        ticking = false;
-                    });
-                    
-                    ticking = true;
-                }
-            });
-
-            // Pointer-driven "camera" motion
-            const root = document.documentElement;
-            const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
-
-            if (hasFinePointer && root) {
-                let cameraFrame = null;
-                let tiltX = 0;
-                let tiltY = 0;
-
-                const lerp = (start, end, amount) => start + (end - start) * amount;
-
-                const applyCamera = (percentX, percentY) => {
-                    tiltX = lerp(tiltX, percentX * 8, 0.12);
-                    tiltY = lerp(tiltY, percentY * -6, 0.12);
-                    root.style.setProperty('--tilt-x', `${tiltX}deg`);
-                    root.style.setProperty('--tilt-y', `${tiltY}deg`);
-                    root.style.setProperty('--pan-x', `${percentX * 16}px`);
-                    root.style.setProperty('--pan-y', `${percentY * 14}px`);
-                    cameraFrame = null;
-                };
-
-                window.addEventListener('pointermove', (event) => {
-                    const percentX = (event.clientX / window.innerWidth) - 0.5;
-                    const percentY = (event.clientY / window.innerHeight) - 0.5;
-
-                    if (!cameraFrame) {
-                        cameraFrame = requestAnimationFrame(() => applyCamera(percentX, percentY));
-                    }
-                });
-
-                window.addEventListener('pointerleave', () => {
-                    tiltX = 0;
-                    tiltY = 0;
-                    root.style.setProperty('--tilt-x', '0deg');
-                    root.style.setProperty('--tilt-y', '0deg');
-                    root.style.setProperty('--pan-x', '0px');
-                    root.style.setProperty('--pan-y', '0px');
-                });
-            }
+            // Reduced motion: no extra parallax or tilt effects to keep things calm
         });
 
         // Smooth scroll
