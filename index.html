@@ -282,16 +282,17 @@
         .hero-headline {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.6rem;
+            gap: 0.4rem;
             justify-content: center;
             align-items: baseline;
             text-align: center;
         }
 
         .hero-rotator {
-            min-width: 10ch;
+            width: 12ch;
             display: inline-flex;
             justify-content: center;
+            align-items: center;
         }
 
         .hero-rotator-word {
@@ -303,16 +304,34 @@
 
         .hero-rotator-word.is-swapping {
             opacity: 0;
-            transform: translateY(12%);
+            transform: translateY(14%);
+        }
+
+        .hero-rotator-word.is-showing {
+            opacity: 1;
+            transform: translateY(-6%);
         }
 
         .hero-tagline {
-            font-size: 1.75rem;
+            font-size: 1.6rem;
             opacity: 0.75;
             margin-bottom: 3rem;
-            line-height: 1.5;
+            line-height: 1.6;
             font-weight: 400;
             text-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+            align-items: center;
+            text-align: center;
+        }
+
+        .tagline-line {
+            display: block;
+        }
+
+        .tagline-indent {
+            padding-left: 0.75rem;
         }
 
         .cta-group {
@@ -952,7 +971,10 @@
                     </span>
                     life
                 </h1>
-                <p class="hero-tagline">we all know the saying, "one man's trash is another man's treasure"; find your treasure today on Swap.</p>
+                <p class="hero-tagline">
+                    <span class="tagline-line">We all know the saying, "One man's trash is another man's treasure."</span>
+                    <span class="tagline-line tagline-indent">Find your treasure today on Swap.</span>
+                </p>
                 <div class="cta-group">
                     <a href="#cta" class="cta-primary metallic-sheen">coming soon</a>
                     <a href="#how-it-works" class="cta-secondary metallic-sheen">learn more</a>
@@ -1207,7 +1229,9 @@
                     wordIndex = (wordIndex + 1) % heroWords.length;
                     rotatingWord.textContent = heroWords[wordIndex];
                     rotatingWord.classList.remove('is-swapping');
-                }, 200);
+                    rotatingWord.classList.add('is-showing');
+                    setTimeout(() => rotatingWord.classList.remove('is-showing'), 250);
+                }, 220);
             };
 
             if (rotatingWord) {
