@@ -140,9 +140,9 @@
             inset: 0;
             z-index: 1;
             background:
-                linear-gradient(180deg, rgba(0, 0, 0, 0.58), rgba(0, 0, 0, 0.85)),
-                radial-gradient(circle at 18% 18%, rgba(0, 0, 0, 0.35), transparent 36%),
-                radial-gradient(circle at 80% 24%, rgba(0, 0, 0, 0.3), transparent 40%);
+                linear-gradient(180deg, rgba(0, 0, 0, 0.38), rgba(0, 0, 0, 0.7)),
+                radial-gradient(circle at 18% 18%, rgba(0, 0, 0, 0.22), transparent 36%),
+                radial-gradient(circle at 80% 24%, rgba(0, 0, 0, 0.2), transparent 42%);
             pointer-events: none;
         }
 
@@ -153,6 +153,51 @@
             flex-direction: column;
             align-items: center;
             width: 100%;
+        }
+
+        /* Shared background video styling */
+        .section-with-video {
+            position: relative;
+            overflow: hidden;
+            isolation: isolate;
+            background: #000;
+        }
+
+        .section-media {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            opacity: 0.5;
+        }
+
+        .section-media iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            pointer-events: none;
+            transform: scale(1.05);
+            background: #000;
+        }
+
+        .section-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.75));
+            pointer-events: none;
+        }
+
+        .section-overlay--soft {
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.6));
+        }
+
+        .section-overlay--strong {
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.24), rgba(0, 0, 0, 0.82));
+        }
+
+        .section-with-video > *:not(.section-media):not(.section-overlay) {
+            position: relative;
+            z-index: 2;
         }
 
         .beta-badge {
@@ -261,6 +306,10 @@
         /* Features Section */
         .features {
             padding: 8rem 2rem;
+        }
+
+        .features .section-header,
+        .features .features-grid {
             max-width: 1200px;
             margin: 0 auto;
         }
@@ -328,7 +377,7 @@
         /* How It Works */
         .how-it-works {
             padding: 8rem 2rem;
-            background: rgba(232, 220, 200, 0.01);
+            background: transparent;
         }
 
         .steps-container {
@@ -704,7 +753,18 @@
         </section>
 
         <!-- Features Section -->
-        <section class="features pan-on-scroll" data-pan="left" id="features">
+        <section class="features pan-on-scroll section-with-video" data-pan="left" id="features">
+            <div class="section-media">
+                <iframe
+                    src="https://player.mux.com/u5AHJlyGU7bgQar01JvUzKAZqe6hNDmAu100LiaOmcGzM?metadata-video-title=metallic+liquid&video-title=metallic+liquid&muted=1&autoplay=1&loop=1&playsinline=1"
+                    title="swap features background video"
+                    allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+                    allowfullscreen
+                    aria-hidden="true"
+                    loading="lazy"
+                ></iframe>
+            </div>
+            <div class="section-overlay section-overlay--soft"></div>
             <div class="section-header scale-in">
                 <h2 class="section-title">trade local, skip shipping</h2>
                 <p class="section-subtitle">zero fees, instant trades, and everything within walking distance</p>
@@ -744,7 +804,18 @@
         </section>
 
         <!-- How It Works -->
-        <section class="how-it-works pan-on-scroll" data-pan="right" id="how-it-works">
+        <section class="how-it-works pan-on-scroll section-with-video" data-pan="right" id="how-it-works">
+            <div class="section-media">
+                <iframe
+                    src="https://player.mux.com/u5AHJlyGU7bgQar01JvUzKAZqe6hNDmAu100LiaOmcGzM?metadata-video-title=metallic+liquid&video-title=metallic+liquid&muted=1&autoplay=1&loop=1&playsinline=1"
+                    title="swap how it works background video"
+                    allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+                    allowfullscreen
+                    aria-hidden="true"
+                    loading="lazy"
+                ></iframe>
+            </div>
+            <div class="section-overlay section-overlay--soft"></div>
             <div class="section-header scale-in">
                 <h2 class="section-title">three steps to swap</h2>
                 <p class="section-subtitle">from listing to trading in minutes</p>
@@ -819,7 +890,18 @@
         </section>
 
         <!-- Final CTA -->
-        <section class="final-cta pan-on-scroll" data-pan="left" id="cta">
+        <section class="final-cta pan-on-scroll section-with-video" data-pan="left" id="cta">
+            <div class="section-media">
+                <iframe
+                    src="https://player.mux.com/u5AHJlyGU7bgQar01JvUzKAZqe6hNDmAu100LiaOmcGzM?metadata-video-title=metallic+liquid&video-title=metallic+liquid&muted=1&autoplay=1&loop=1&playsinline=1"
+                    title="swap final call to action background video"
+                    allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+                    allowfullscreen
+                    aria-hidden="true"
+                    loading="lazy"
+                ></iframe>
+            </div>
+            <div class="section-overlay section-overlay--strong"></div>
             <h2 class="scale-in">ready to start swapping?</h2>
             <p class="fade-in">join the community trading locally, sustainably, and fee-free</p>
             <div class="cta-group fade-in">
