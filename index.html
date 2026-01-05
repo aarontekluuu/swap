@@ -11,12 +11,20 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --tilt-x: 0deg;
+            --tilt-y: 0deg;
+            --pan-x: 0px;
+            --pan-y: 0px;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif;
             background: #000;
             color: #E8DCC8;
             line-height: 1.6;
             overflow-x: hidden;
+            perspective: 1600px;
         }
 
         /* Lava Lamp Background */
@@ -168,6 +176,10 @@
         .content {
             position: relative;
             z-index: 1;
+            transform-style: preserve-3d;
+            transform: rotateX(var(--tilt-y)) rotateY(var(--tilt-x)) translate3d(var(--pan-x), var(--pan-y), 0);
+            transition: transform 0.45s ease-out;
+            will-change: transform;
         }
 
         /* Hero Section */
@@ -212,6 +224,15 @@
             gap: 1.5rem;
             justify-content: center;
             flex-wrap: wrap;
+        }
+
+        .hero-motion {
+            animation: breathe 9s ease-in-out infinite;
+        }
+
+        @keyframes breathe {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
         }
 
         .cta-primary {
@@ -291,12 +312,14 @@
             border-radius: 1.5rem;
             border: 1px solid rgba(232, 220, 200, 0.08);
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
         }
 
         .feature-card:hover {
             background: rgba(232, 220, 200, 0.05);
-            transform: translateY(-8px);
+            transform: translateY(-8px) translateZ(18px);
             border-color: rgba(232, 220, 200, 0.15);
+            box-shadow: 0 18px 60px rgba(0, 0, 0, 0.35);
         }
 
         .feature-icon {
@@ -382,12 +405,14 @@
             border: 1px solid rgba(232, 220, 200, 0.08);
             border-radius: 1.5rem;
             padding: 2.5rem;
-            transition: all 0.3s;
+            transition: all 0.35s ease;
+            transform-style: preserve-3d;
         }
 
         .mockup-card:hover {
-            transform: translateY(-4px);
+            transform: translateY(-6px) translateZ(12px);
             background: rgba(232, 220, 200, 0.05);
+            box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
         }
 
         .mockup-title {
@@ -424,6 +449,12 @@
 
         .value-card {
             text-align: center;
+            transform-style: preserve-3d;
+            transition: transform 0.35s ease, color 0.3s ease;
+        }
+
+        .value-card:hover {
+            transform: translateY(-6px) translateZ(10px);
         }
 
         .value-icon {
@@ -540,6 +571,12 @@
 
             .final-cta h2 {
                 font-size: 2.75rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                transform: none !important;
             }
         }
 
@@ -671,7 +708,7 @@
             <div class="beta-badge">beta</div>
             <h1>swap</h1>
             <p class="hero-tagline">find a match nearby and swap</p>
-            <div class="cta-group">
+            <div class="cta-group hero-motion">
                 <a href="#cta" class="cta-primary">coming soon</a>
                 <a href="#how-it-works" class="cta-secondary">learn more</a>
             </div>
@@ -817,7 +854,6 @@
                     <h4>company</h4>
                     <ul>
                         <li><a href="#">about</a></li>
-                        <li><a href="#">careers</a></li>
                         <li><a href="#">contact</a></li>
                     </ul>
                 </div>
@@ -899,6 +935,46 @@
                     ticking = true;
                 }
             });
+
+            // Pointer-driven "camera" motion
+            const root = document.documentElement;
+            const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
+
+            if (hasFinePointer && root) {
+                let cameraFrame = null;
+                let tiltX = 0;
+                let tiltY = 0;
+
+                const lerp = (start, end, amount) => start + (end - start) * amount;
+
+                const applyCamera = (percentX, percentY) => {
+                    tiltX = lerp(tiltX, percentX * 8, 0.12);
+                    tiltY = lerp(tiltY, percentY * -6, 0.12);
+                    root.style.setProperty('--tilt-x', `${tiltX}deg`);
+                    root.style.setProperty('--tilt-y', `${tiltY}deg`);
+                    root.style.setProperty('--pan-x', `${percentX * 16}px`);
+                    root.style.setProperty('--pan-y', `${percentY * 14}px`);
+                    cameraFrame = null;
+                };
+
+                window.addEventListener('pointermove', (event) => {
+                    const percentX = (event.clientX / window.innerWidth) - 0.5;
+                    const percentY = (event.clientY / window.innerHeight) - 0.5;
+
+                    if (!cameraFrame) {
+                        cameraFrame = requestAnimationFrame(() => applyCamera(percentX, percentY));
+                    }
+                });
+
+                window.addEventListener('pointerleave', () => {
+                    tiltX = 0;
+                    tiltY = 0;
+                    root.style.setProperty('--tilt-x', '0deg');
+                    root.style.setProperty('--tilt-y', '0deg');
+                    root.style.setProperty('--pan-x', '0px');
+                    root.style.setProperty('--pan-y', '0px');
+                });
+            }
         });
 
         // Smooth scroll
