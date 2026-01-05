@@ -279,6 +279,33 @@
             text-shadow: 0 14px 34px rgba(0, 0, 0, 0.55);
         }
 
+        .hero-headline {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            justify-content: center;
+            align-items: baseline;
+            text-align: center;
+        }
+
+        .hero-rotator {
+            min-width: 10ch;
+            display: inline-flex;
+            justify-content: center;
+        }
+
+        .hero-rotator-word {
+            color: #e8dcc8;
+            font-style: italic;
+            display: inline-block;
+            transition: opacity 0.35s ease, transform 0.35s ease;
+        }
+
+        .hero-rotator-word.is-swapping {
+            opacity: 0;
+            transform: translateY(12%);
+        }
+
         .hero-tagline {
             font-size: 1.75rem;
             opacity: 0.75;
@@ -918,8 +945,14 @@
             <div class="hero-overlay"></div>
             <div class="hero-content">
                 <div class="beta-badge">beta</div>
-                <h1>swap</h1>
-                <p class="hero-tagline">find a match nearby and swap</p>
+                <h1 class="hero-headline">
+                    Live a more
+                    <span class="hero-rotator" aria-live="polite">
+                        <span class="hero-rotator-word">sustainable</span>
+                    </span>
+                    life
+                </h1>
+                <p class="hero-tagline">we all know the saying, "one man's trash is another man's treasure"; find your treasure today on Swap.</p>
                 <div class="cta-group">
                     <a href="#cta" class="cta-primary metallic-sheen">coming soon</a>
                     <a href="#how-it-works" class="cta-secondary metallic-sheen">learn more</a>
@@ -1161,6 +1194,25 @@
             animatedElements.forEach(el => {
                 observer.observe(el);
             });
+
+            // Rotate hero headline words
+            const rotatingWord = document.querySelector('.hero-rotator-word');
+            const heroWords = ['sustainable', 'cost-effective', 'happy'];
+            let wordIndex = 0;
+
+            const swapHeroWord = () => {
+                if (!rotatingWord) return;
+                rotatingWord.classList.add('is-swapping');
+                setTimeout(() => {
+                    wordIndex = (wordIndex + 1) % heroWords.length;
+                    rotatingWord.textContent = heroWords[wordIndex];
+                    rotatingWord.classList.remove('is-swapping');
+                }, 200);
+            };
+
+            if (rotatingWord) {
+                setInterval(swapHeroWord, 2200);
+            }
 
             // Gentle horizontal motion on scroll
             const panElements = document.querySelectorAll('[data-pan]');
