@@ -233,8 +233,28 @@
             flex-wrap: wrap;
         }
 
+        .cta-primary,
+        .cta-secondary {
+            position: relative;
+            overflow: hidden;
+            isolation: isolate;
+        }
+
+        .metallic-sheen::after {
+            content: '';
+            position: absolute;
+            inset: -180% -40%;
+            background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.36), transparent 35%),
+                        radial-gradient(circle at 80% 30%, rgba(255, 255, 255, 0.16), transparent 45%);
+            transform: translateX(-20%);
+            opacity: 0;
+            transition: transform 0.7s ease, opacity 0.7s ease;
+            pointer-events: none;
+            z-index: 0;
+        }
+
         .cta-primary {
-            background: #E8DCC8;
+            background: linear-gradient(135deg, #f6eedf 0%, #e8dcc8 45%, #cbbda7 100%);
             color: #000;
             padding: 1.15rem 2.75rem;
             border-radius: 2.5rem;
@@ -242,33 +262,45 @@
             font-weight: 600;
             border: none;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
             text-decoration: none;
             display: inline-block;
+            box-shadow: 0 12px 30px rgba(232, 220, 200, 0.28), 0 0 0 1px rgba(0, 0, 0, 0.12);
+            z-index: 1;
         }
 
         .cta-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(232, 220, 200, 0.3);
+            box-shadow: 0 14px 34px rgba(232, 220, 200, 0.34), 0 0 0 1px rgba(0, 0, 0, 0.14);
         }
 
         .cta-secondary {
-            background: transparent;
+            background:
+                linear-gradient(#000, #000) padding-box,
+                linear-gradient(135deg, rgba(232, 220, 200, 0.7), rgba(232, 220, 200, 0.15)) border-box;
             color: #E8DCC8;
             padding: 1.15rem 2.75rem;
             border-radius: 2.5rem;
             font-size: 1.05rem;
             font-weight: 600;
-            border: 1.5px solid rgba(232, 220, 200, 0.25);
+            border: 1.5px solid transparent;
             cursor: pointer;
             transition: all 0.3s;
             text-decoration: none;
             display: inline-block;
+            box-shadow: 0 10px 26px rgba(0, 0, 0, 0.38), 0 0 0 1px rgba(232, 220, 200, 0.12);
+            z-index: 1;
         }
 
         .cta-secondary:hover {
-            border-color: #E8DCC8;
-            background: rgba(232, 220, 200, 0.05);
+            background:
+                linear-gradient(#0a0a0a, #0a0a0a) padding-box,
+                linear-gradient(135deg, rgba(232, 220, 200, 0.9), rgba(232, 220, 200, 0.25)) border-box;
+        }
+
+        .metallic-sheen:hover::after {
+            transform: translateX(26%);
+            opacity: 1;
         }
 
         /* Features Section */
@@ -708,8 +740,8 @@
             <h1>swap</h1>
             <p class="hero-tagline">find a match nearby and swap</p>
             <div class="cta-group">
-                <a href="#cta" class="cta-primary">coming soon</a>
-                <a href="#how-it-works" class="cta-secondary">learn more</a>
+                <a href="#cta" class="cta-primary metallic-sheen">coming soon</a>
+                <a href="#how-it-works" class="cta-secondary metallic-sheen">learn more</a>
             </div>
         </section>
 
@@ -833,8 +865,8 @@
             <h2 class="scale-in">ready to start swapping?</h2>
             <p class="fade-in">join the community trading locally, sustainably, and fee-free</p>
             <div class="cta-group fade-in">
-                <button class="cta-primary" onclick="alert('coming soon to app store')">download soon</button>
-                <button class="cta-secondary" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">back to top</button>
+                <button class="cta-primary metallic-sheen" onclick="alert('coming soon to app store')">download soon</button>
+                <button class="cta-secondary metallic-sheen" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">back to top</button>
             </div>
         </section>
 
