@@ -388,7 +388,7 @@
 
         .section-header {
             text-align: center;
-            margin-bottom: 5rem;
+            margin-bottom: 3.5rem;
         }
 
         .section-title {
@@ -404,6 +404,7 @@
             max-width: 600px;
             margin: 0 auto;
             font-weight: 400;
+            margin-bottom: 0.5rem;
         }
 
         .features-grid {
@@ -909,6 +910,9 @@
                 <video
                     class="hero-video"
                     playsinline
+                    webkit-playsinline
+                    x5-playsinline
+                    x-webkit-airplay="allow"
                     autoplay
                     muted
                     loop
@@ -1160,11 +1164,23 @@
 
             // Nudge hero video to play on mobile
             const heroVideo = document.querySelector('.hero-video');
-            const tryPlay = () => heroVideo && heroVideo.play().catch(() => {});
+            const tryPlay = () => {
+                if (!heroVideo) return;
+                heroVideo.muted = true;
+                heroVideo.playsInline = true;
+                heroVideo.setAttribute('playsinline', '');
+                heroVideo.setAttribute('webkit-playsinline', '');
+                heroVideo.play().catch(() => {});
+            };
             if (heroVideo) {
                 heroVideo.addEventListener('loadeddata', tryPlay);
                 heroVideo.addEventListener('click', tryPlay, { once: true });
                 heroVideo.addEventListener('touchstart', tryPlay, { once: true });
+                document.addEventListener('visibilitychange', () => {
+                    if (!document.hidden) {
+                        tryPlay();
+                    }
+                });
             }
 
             // Observe all animated elements
