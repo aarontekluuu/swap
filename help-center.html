@@ -8,10 +8,15 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif;
-            background: #000;
+            background:
+                radial-gradient(circle at 18% 20%, rgba(232, 220, 200, 0.16), transparent 32%),
+                radial-gradient(circle at 80% 10%, rgba(232, 220, 200, 0.08), transparent 36%),
+                #000;
             color: #E8DCC8;
             line-height: 1.65;
         }
+        body.preload .page { opacity: 0; transform: translateY(18px); }
+        body:not(.preload) .page { transition: opacity 0.6s ease, transform 0.6s ease; }
         a { color: #E8DCC8; text-decoration: none; }
         a:hover { color: #fff; }
         nav {
@@ -26,7 +31,7 @@
         nav a:hover { color: #111; }
         .logo { font-size: 1.35rem; font-weight: 600; letter-spacing: -0.01em; }
         .breadcrumb { font-size: 0.95rem; opacity: 0.65; color: #000; }
-        .container { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem 4.5rem; }
+        .container.page { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem 4.5rem; }
         .hero { padding: 3.5rem 0 2rem; }
         .eyebrow {
             display: inline-flex;
@@ -45,6 +50,7 @@
             border: 1px solid rgba(232, 220, 200, 0.12);
             background: rgba(232, 220, 200, 0.03);
             border-radius: 1rem;
+            box-shadow: 0 16px 50px rgba(0, 0, 0, 0.4);
         }
         .section h2 { font-size: 1.25rem; margin-bottom: 0.6rem; }
         .section p { margin-bottom: 0.8rem; opacity: 0.75; }
@@ -60,17 +66,18 @@
             border-radius: 0.9rem;
             border: 1px solid rgba(232, 220, 200, 0.12);
             background: rgba(232, 220, 200, 0.02);
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35);
         }
         .card h3 { font-size: 1.05rem; margin-bottom: 0.4rem; }
         .card p { opacity: 0.7; }
     </style>
 </head>
-<body>
+<body class="preload">
     <nav>
         <a class="logo" href="index.html">swap</a>
         <div class="breadcrumb">help center</div>
     </nav>
-    <main class="container">
+    <main class="container page">
         <header class="hero">
             <div class="eyebrow">support · guidance</div>
             <h1>Help Center</h1>
@@ -108,5 +115,10 @@
             </ul>
         </section>
     </main>
+    <script>
+        window.addEventListener('load', () => {
+            requestAnimationFrame(() => document.body.classList.remove('preload'));
+        });
+    </script>
 </body>
 </html>

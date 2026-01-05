@@ -19,6 +19,17 @@
             overflow-x: hidden;
         }
 
+        body.preload nav,
+        body.preload .content {
+            opacity: 0;
+            transform: translateY(16px);
+        }
+
+        body:not(.preload) nav,
+        body:not(.preload) .content {
+            transition: opacity 0.65s ease, transform 0.65s ease;
+        }
+
         /* Lava Lamp Background */
         .lava-container {
             position: fixed;
@@ -121,6 +132,7 @@
             align-items: center;
             z-index: 1000;
             border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+            transform: translateZ(0);
         }
 
         .logo {
@@ -168,6 +180,13 @@
         .content {
             position: relative;
             z-index: 1;
+        }
+
+        .pan-on-scroll {
+            --pan-x: 0px;
+            transform: translateX(var(--pan-x));
+            will-change: transform;
+            transition: transform 0.25s ease-out;
         }
 
         /* Hero Section */
@@ -660,7 +679,7 @@
         .stagger-item:nth-child(6) { transition-delay: 0.5s; }
     </style>
 </head>
-<body>
+<body class="preload">
     <!-- Lava Lamp Background -->
     <div class="lava-container">
         <div class="lava-blob"></div>
@@ -695,7 +714,7 @@
         </section>
 
         <!-- Features Section -->
-        <section class="features" id="features">
+        <section class="features pan-on-scroll" data-pan="left" id="features">
             <div class="section-header scale-in">
                 <h2 class="section-title">trade local, skip shipping</h2>
                 <p class="section-subtitle">zero fees, instant trades, and everything within walking distance</p>
@@ -735,7 +754,7 @@
         </section>
 
         <!-- How It Works -->
-        <section class="how-it-works" id="how-it-works">
+        <section class="how-it-works pan-on-scroll" data-pan="right" id="how-it-works">
             <div class="section-header scale-in">
                 <h2 class="section-title">three steps to swap</h2>
                 <p class="section-subtitle">from listing to trading in minutes</p>
@@ -760,7 +779,7 @@
         </section>
 
         <!-- UI Preview -->
-        <section class="ui-preview">
+        <section class="ui-preview pan-on-scroll" data-pan="left">
             <div class="section-header scale-in">
                 <h2 class="section-title">designed for speed</h2>
                 <p class="section-subtitle">every feature built to make swapping effortless</p>
@@ -785,7 +804,7 @@
         </section>
 
         <!-- Values -->
-        <section class="values" id="values">
+        <section class="values pan-on-scroll" data-pan="right" id="values">
             <div class="section-header scale-in">
                 <h2 class="section-title">why swap exists</h2>
                 <p class="section-subtitle">we're building a better way to trade</p>
@@ -810,7 +829,7 @@
         </section>
 
         <!-- Final CTA -->
-        <section class="final-cta" id="cta">
+        <section class="final-cta pan-on-scroll" data-pan="left" id="cta">
             <h2 class="scale-in">ready to start swapping?</h2>
             <p class="fade-in">join the community trading locally, sustainably, and fee-free</p>
             <div class="cta-group fade-in">
@@ -873,6 +892,9 @@
 
         // Wait for DOM to be fully loaded
         window.addEventListener('load', () => {
+            // Release intro animation
+            requestAnimationFrame(() => document.body.classList.remove('preload'));
+
             // Observe all animated elements
             const animatedElements = document.querySelectorAll(
                 '.fade-in, .scale-in, .slide-left, .slide-right, .stagger-item'
@@ -882,7 +904,34 @@
                 observer.observe(el);
             });
 
-            // Reduced motion: no extra parallax or tilt effects to keep things calm
+            // Gentle horizontal motion on scroll
+            const panElements = document.querySelectorAll('[data-pan]');
+            let panTicking = false;
+
+            const applyPan = () => {
+                panElements.forEach(el => {
+                    const rect = el.getBoundingClientRect();
+                    if (rect.bottom < -120 || rect.top > window.innerHeight + 120) return;
+                    const centerDelta = (window.innerHeight / 2 - (rect.top + rect.height / 2)) / (window.innerHeight / 2);
+                    const clamped = Math.max(-1, Math.min(1, centerDelta));
+                    const direction = el.dataset.pan === 'left' ? -1 : 1;
+                    const strength = el.dataset.panStrength ? parseFloat(el.dataset.panStrength) : 18;
+                    el.style.setProperty('--pan-x', `${clamped * strength * direction}px`);
+                });
+            };
+
+            const panOnScroll = () => {
+                if (!panTicking) {
+                    panTicking = true;
+                    requestAnimationFrame(() => {
+                        applyPan();
+                        panTicking = false;
+                    });
+                }
+            };
+
+            window.addEventListener('scroll', panOnScroll, { passive: true });
+            applyPan();
         });
 
         // Smooth scroll
