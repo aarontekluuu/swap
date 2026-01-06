@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>swap — help center</title>
+    <script>
+        document.documentElement.classList.add('js-preload');
+    </script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -15,8 +18,8 @@
             color: #E8DCC8;
             line-height: 1.65;
         }
-        body.preload .page { opacity: 0; transform: translateY(18px); }
-        body:not(.preload) .page { transition: opacity 0.6s ease, transform 0.6s ease; }
+        html.js-preload .page { opacity: 0; transform: translateY(18px); }
+        html:not(.js-preload) .page { transition: opacity 0.6s ease, transform 0.6s ease; }
         a { color: #E8DCC8; text-decoration: none; }
         a:hover { color: #fff; }
         nav {
@@ -70,9 +73,17 @@
         }
         .card h3 { font-size: 1.05rem; margin-bottom: 0.4rem; }
         .card p { opacity: 0.7; }
+
+        @media (prefers-reduced-motion: reduce) {
+            .page {
+                opacity: 1 !important;
+                transform: none !important;
+                transition: none !important;
+            }
+        }
     </style>
 </head>
-<body class="preload">
+<body>
     <nav>
         <a class="logo" href="index.html">swap</a>
         <div class="breadcrumb">help center</div>
@@ -117,7 +128,7 @@
     </main>
     <script>
         window.addEventListener('load', () => {
-            requestAnimationFrame(() => document.body.classList.remove('preload'));
+            requestAnimationFrame(() => document.documentElement.classList.remove('js-preload'));
         });
     </script>
 </body>

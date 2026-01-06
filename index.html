@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>swap - find a match nearby and swap</title>
+    <script>
+        document.documentElement.classList.add('js-preload');
+    </script>
     <style>
         * {
             margin: 0;
@@ -19,14 +22,14 @@
             overflow-x: hidden;
         }
 
-        body.preload nav,
-        body.preload .content {
+        html.js-preload nav,
+        html.js-preload .content {
             opacity: 0;
             transform: translateY(16px);
         }
 
-        body:not(.preload) nav,
-        body:not(.preload) .content {
+        html:not(.js-preload) nav,
+        html:not(.js-preload) .content {
             transition: opacity 0.65s ease, transform 0.65s ease;
         }
 
@@ -161,6 +164,12 @@
             opacity: 1;
         }
 
+        a:focus-visible,
+        button:focus-visible {
+            outline: 2px solid currentColor;
+            outline-offset: 4px;
+        }
+
         .cta-nav {
             position: relative;
             overflow: hidden;
@@ -186,6 +195,10 @@
             z-index: 1;
         }
 
+        section {
+            scroll-margin-top: 120px;
+        }
+
         .pan-on-scroll {
             --pan-x: 0px;
             transform: translateX(var(--pan-x));
@@ -205,9 +218,7 @@
             position: relative;
             overflow: hidden;
             isolation: isolate;
-            background: radial-gradient(circle at 20% 20%, rgba(232, 220, 200, 0.08), transparent 36%),
-                        radial-gradient(circle at 78% 12%, rgba(255, 255, 255, 0.05), transparent 40%),
-                        #000;
+            background: #000;
         }
 
         .hero-media {
@@ -254,9 +265,6 @@
             flex-direction: column;
             align-items: center;
             width: 100%;
-            max-width: 800px;
-            margin: 0 auto;
-            text-align: center;
         }
 
         @keyframes heroGlow {
@@ -286,71 +294,48 @@
 
         .hero-headline {
             display: flex;
-            flex-wrap: nowrap;
-            gap: 0.4rem;
+            flex-wrap: wrap;
+            gap: 0.6rem;
             justify-content: center;
             align-items: baseline;
             text-align: center;
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            font-weight: 700;
-            font-size: clamp(2.8rem, 5vw + 1.2rem, 4.5rem);
-            letter-spacing: -0.04em;
-            line-height: 1.1;
-            max-width: 800px;
-            margin: 0 auto 1.25rem;
-            white-space: nowrap;
-            overflow: visible;
-            background: transparent;
-            border: none;
-            padding: 0;
         }
 
         .hero-rotator {
-            width: 13ch;
+            min-width: 14ch;
             display: inline-flex;
             justify-content: center;
-            align-items: center;
-            text-align: center;
         }
 
         .hero-rotator-word {
             color: #e8dcc8;
             font-style: italic;
             display: inline-block;
-            transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1), transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+            transition: opacity 0.35s ease, transform 0.35s ease;
         }
 
         .hero-rotator-word.is-swapping {
             opacity: 0;
-            transform: translateY(30%) scale(0.96);
-        }
-
-        .hero-rotator-word.is-showing {
-            opacity: 1;
-            transform: translateY(-8%) scale(1.02);
+            transform: translateY(12%);
         }
 
         .hero-tagline {
-            font-size: 1.2rem;
-            opacity: 0.6;
-            margin-bottom: 1.5rem;
+            font-size: 1.75rem;
+            opacity: 0.75;
+            margin-bottom: 3rem;
+            max-width: 720px;
+            margin-left: auto;
+            margin-right: auto;
             line-height: 1.5;
-            font-weight: 500;
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            font-weight: 400;
             text-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
-            display: inline-flex;
-            align-items: center;
-            text-align: center;
-            max-width: none;
-            white-space: nowrap;
         }
 
         .cta-group {
             display: flex;
-            gap: 1rem;
+            gap: 1.5rem;
             justify-content: center;
             flex-wrap: wrap;
-            margin-top: 1.25rem;
         }
 
         .cta-primary,
@@ -867,6 +852,10 @@
             .cta-primary, .cta-secondary {
                 width: 100%;
             }
+
+            section {
+                scroll-margin-top: 96px;
+            }
         }
 
         /* Smooth animations with parallax */
@@ -943,9 +932,29 @@
         .stagger-item:nth-child(4) { transition-delay: 0.3s; }
         .stagger-item:nth-child(5) { transition-delay: 0.4s; }
         .stagger-item:nth-child(6) { transition-delay: 0.5s; }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation: none !important;
+                transition: none !important;
+            }
+
+            .fade-in,
+            .scale-in,
+            .slide-left,
+            .slide-right,
+            .stagger-item {
+                opacity: 1 !important;
+                transform: none !important;
+            }
+
+            .pan-on-scroll {
+                transform: none !important;
+            }
+        }
     </style>
 </head>
-<body class="preload">
+<body id="top">
     <!-- Lava Lamp Background -->
     <div class="lava-container">
         <div class="lava-blob"></div>
@@ -961,7 +970,8 @@
         <div class="nav-links">
             <a href="#features">features</a>
             <a href="#how-it-works">how it works</a>
-            <a href="#cta" class="cta-nav metallic-sheen">coming soon</a>
+            <a href="#values">why swap</a>
+            <a href="#features" class="cta-nav metallic-sheen">explore features</a>
         </div>
     </nav>
 
@@ -977,15 +987,15 @@
                 <div class="beta-badge">beta</div>
                 <h1 class="hero-headline">
                     Live a more
-                    <span class="hero-rotator" aria-live="polite">
+                    <span class="hero-rotator">
                         <span class="hero-rotator-word">sustainable</span>
                     </span>
                     life
                 </h1>
-                <p class="hero-tagline">We all know the saying, "One man's trash is another man's treasure." Find your treasure today on Swap.</p>
+                <p class="hero-tagline">We all know the saying "One man's trash is another man's treasure" find your treasure today on Swap.</p>
                 <div class="cta-group">
-                    <a href="#cta" class="cta-primary metallic-sheen">coming soon</a>
-                    <a href="#how-it-works" class="cta-secondary metallic-sheen">learn more</a>
+                    <a href="#features" class="cta-primary metallic-sheen">explore features</a>
+                    <a href="#how-it-works" class="cta-secondary metallic-sheen">see how it works</a>
                 </div>
             </div>
         </section>
@@ -1154,8 +1164,8 @@
             <h2 class="scale-in">ready to start swapping?</h2>
             <p class="fade-in">join the community trading locally, sustainably, and fee-free</p>
             <div class="cta-group fade-in">
-                <button class="cta-primary metallic-sheen" onclick="alert('coming soon to app store')">download soon</button>
-                <button class="cta-secondary metallic-sheen" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">back to top</button>
+                <a href="#features" class="cta-primary metallic-sheen">explore features</a>
+                <a href="#top" class="cta-secondary metallic-sheen">back to top</a>
             </div>
         </section>
 
@@ -1167,7 +1177,7 @@
                     <ul>
                         <li><a href="#features">features</a></li>
                         <li><a href="#how-it-works">how it works</a></li>
-                        <li><a href="#cta">download</a></li>
+                        <li><a href="#features">get started</a></li>
                     </ul>
                 </div>
                 <div class="footer-column">
@@ -1197,33 +1207,39 @@
     </div>
 
     <script>
-        // Simpler, more reliable scroll animations
-        const observerOptions = {
-            threshold: 0.05,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, observerOptions);
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
         // Wait for DOM to be fully loaded
         window.addEventListener('load', () => {
             // Release intro animation
-            requestAnimationFrame(() => document.body.classList.remove('preload'));
+            requestAnimationFrame(() => document.documentElement.classList.remove('js-preload'));
 
             // Observe all animated elements
             const animatedElements = document.querySelectorAll(
                 '.fade-in, .scale-in, .slide-left, .slide-right, .stagger-item'
             );
-            
-            animatedElements.forEach(el => {
-                observer.observe(el);
-            });
+
+            if (prefersReducedMotion) {
+                animatedElements.forEach(el => el.classList.add('visible'));
+            } else {
+                // Simpler, more reliable scroll animations
+                const observerOptions = {
+                    threshold: 0.05,
+                    rootMargin: '0px 0px -50px 0px'
+                };
+
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                        }
+                    });
+                }, observerOptions);
+
+                animatedElements.forEach(el => {
+                    observer.observe(el);
+                });
+            }
 
             // Rotate hero headline words
             const rotatingWord = document.querySelector('.hero-rotator-word');
@@ -1237,12 +1253,10 @@
                     wordIndex = (wordIndex + 1) % heroWords.length;
                     rotatingWord.textContent = heroWords[wordIndex];
                     rotatingWord.classList.remove('is-swapping');
-                    rotatingWord.classList.add('is-showing');
-                    setTimeout(() => rotatingWord.classList.remove('is-showing'), 250);
-                }, 220);
+                }, 200);
             };
 
-            if (rotatingWord) {
+            if (rotatingWord && !prefersReducedMotion) {
                 setInterval(swapHeroWord, 2200);
             }
 
@@ -1262,28 +1276,32 @@
                 });
             };
 
-            const panOnScroll = () => {
-                if (!panTicking) {
-                    panTicking = true;
-                    requestAnimationFrame(() => {
-                        applyPan();
-                        panTicking = false;
-                    });
-                }
-            };
+            if (!prefersReducedMotion && panElements.length) {
+                const panOnScroll = () => {
+                    if (!panTicking) {
+                        panTicking = true;
+                        requestAnimationFrame(() => {
+                            applyPan();
+                            panTicking = false;
+                        });
+                    }
+                };
 
-            window.addEventListener('scroll', panOnScroll, { passive: true });
-            applyPan();
+                window.addEventListener('scroll', panOnScroll, { passive: true });
+                applyPan();
+            }
         });
 
         // Smooth scroll
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
-                e.preventDefault();
                 const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
+                if (!target) return;
+                e.preventDefault();
+                target.scrollIntoView({
+                    behavior: prefersReducedMotion ? 'auto' : 'smooth',
+                    block: 'start'
+                });
             });
         });
     </script>
